@@ -10,7 +10,7 @@ const SingleProduct = () => {
 
   useEffect(() => {
     console.log("Product ID:", id); // Debugging step to check if id is correct
-    axios(`https://api.escuelajs.co/api/v1/products/${id}`)
+    axios(`https://dummyjson.com/products/${id}`)
       .then((response) => {
         setData(response.data);
       })
@@ -18,14 +18,14 @@ const SingleProduct = () => {
         console.error("Error fetching data:", error);
         setError("Failed to fetch product data.");
       });
-  }, []);
+  }, [id]); // Adding id as a dependency
 
   if (error) {
     return <div>{error}</div>;
   }
 
   if (!data) {
-    return  <CircularProgress />;
+    return <CircularProgress />;
   }
 
   return (
@@ -36,7 +36,6 @@ const SingleProduct = () => {
         justifyContent: "center",
         alignItems: "center",
         padding: 4,
-        
       }}
     >
       <Box>
@@ -44,15 +43,19 @@ const SingleProduct = () => {
           sx={{
             height: 400,
             width: 400,
-            obejectFit: "contain",
+            objectFit: "contain", // Fixed typo from "obejectFit" to "objectFit"
           }}
-          image={data.images && data.images[0]}
+          image={Array.isArray(data.images) && data.images.length > 0 ? data.images[0] : ""}
         />
       </Box>
       <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-        <h1>{data.title}</h1>
-        <Typography sx={{ maxWidth: 500,  textAlign: "justify" }}>{data.description}</Typography>
-        <Typography sx={{ fontSize: 30, color: "primary"}} variant="contained">Price: ${data.price}</Typography>
+        <Typography variant="h4">{data.title}</Typography>
+        <Typography sx={{ maxWidth: 500, textAlign: "justify" }}>
+          {data.description}
+        </Typography>
+        <Typography sx={{ fontSize: 30, color: "primary.main" }}>
+          Price: ${data.price}
+        </Typography>
       </Box>
     </Box>
   );
